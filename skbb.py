@@ -1,9 +1,14 @@
 import subprocess
 import sys
 import os
-# အပေါ်ဆုံး ထည့်ပါ
+# ရိုးရိုးနေရာအစား Disk ဆောက်ထားတဲ့ /data/ ထဲမှာ သိမ်းခိုင်းပါ
 if os.getenv("RENDER"):
-    os.environ["BOT_PORT"] = os.getenv("PORT", "5000")
+    DATABASE_PATH = '/data/devmgkiki_bot.db'
+    UPLOAD_BOTS_DIR = '/data/upload_bots' # တင်ထားတဲ့ bot ဖိုင်တွေ မပျောက်ပျက်စေရန်
+else:
+    DATABASE_PATH = os.path.join(os.path.dirname(__file__), 'devmgkiki_bot.db')
+    UPLOAD_BOTS_DIR = os.path.join(BASE_DIR, 'upload_bots')
+
 import sqlite3
 import threading
 import time
@@ -51,8 +56,10 @@ def home():
 ╚════════════════════════════════════════════════════╝"""
 
 def run_flask():
-    port = int(os.environ.get("PORT", os.environ.get("BOT_PORT", 5000)))
+    # os.environ.get('PORT') ကို အရင် တိုက်ရိုက်ဖတ်ပါ
+    port = int(os.environ.get("PORT", 5000)) 
     app.run(host='0.0.0.0', port=port)
+
 
 def keep_alive():
     t = Thread(target=run_flask)
@@ -61,7 +68,7 @@ def keep_alive():
     print("🟣 Flask Keep-Alive started.")
 
 # ========== BOT CONFIGURATION ==========
-TOKEN = os.environ.get("BOT_TOKEN", '8850525377:AAEUrDW_1buI4JzmHmN-tcwJM_ZWVK38IZ0')
+TOKEN = os.environ.get("BOT_TOKEN")
 OWNER_ID = int(os.environ.get("OWNER_ID", 7308292609))
 ADMIN_ID = int(os.environ.get("ADMIN_ID", 7308292609))
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", '@kiki20251')
@@ -1727,6 +1734,5 @@ if __name__ == '__main__':
     while True:
         try: bot.infinity_polling(timeout=60, long_polling_timeout=30)
         except Exception as e: logger.error(f"❌ Polling error: {e}"); time.sleep(5)
-
 
 
