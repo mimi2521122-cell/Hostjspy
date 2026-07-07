@@ -2,3 +2,5 @@ psutil
 pyTelegramBotAPI
 flask
 requests
+gunicorn
+
